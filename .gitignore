@@ -128,3 +128,12 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+#CHROMEDRIVER
+*.exe
+
+#NODE-MODULES
+node_modules/
+
+#ENVIRONMENT
+*.env
