@@ -282,9 +282,9 @@ async function guardaDatosExtraidos(idUnico, datos) {
                 resolve(0);
                 return;
             }
-            const query = 'UPDATE registros_SemanasCotizadas SET fechaAlta = ?, fechaBaja = ?, salarioBase  = ?, ultimoPatron = ?, ultimoRegistroPatronal = ?, nombreArchivo = ? where idRPA=?;';
+            const query = 'UPDATE registros_SemanasCotizadas SET fechaAlta = ?, fechaBaja = ?, salarioBase  = ?, salarioAnterior = ?, ultimoPatron = ?, ultimoRegistroPatronal = ?, nombreArchivo = ? where idRPA=?;';
 
-            connection.query(query, [datos.fechaAlta, datos.fechaBaja, datos.salarioBase, datos.ultimoPatron, datos.ultimoRegistroPatronal, datos.nombreArchivo, idUnico], (error, results) => {
+            connection.query(query, [datos.fechaAlta, datos.fechaBaja, datos.salarioBase, datos.salarioAnterior, datos.ultimoPatron, datos.ultimoRegistroPatronal, datos.nombreArchivo, idUnico], (error, results) => {
                 connection.release();
 
                 if (error) {
@@ -337,7 +337,7 @@ async function buscaInformacion(idUnico) {
                 resolve([]);
                 return;
             }
-            const query = 'select nss,curp,nombre,fechaBaja,fechaAlta,nombre,salarioBase,ultimoPatron,ultimoRegistroPatronal,descError,statusBusqueda,nombreArchivo from registros_SemanasCotizadas where idRPA =?;';
+            const query = 'select nss,curp,nombre,fechaBaja,fechaAlta,nombre,salarioBase,salarioAnterior,ultimoPatron,ultimoRegistroPatronal,descError,statusBusqueda,nombreArchivo from registros_SemanasCotizadas where idRPA =?;';
             connection.query(query, [idUnico], (error, results) => {
                 connection.release();
 
@@ -661,6 +661,7 @@ async function flujoRPA(usuario, contador) {
         objresp.fechaBaja = datosPdf.fechaBaja
         objresp.fechaAlta = datosPdf.fechaAlta
         objresp.salarioBase = datosPdf.salarioBase
+        objresp.salarioAnterior = datosPdf.salarioAnterior
         objresp.ultimoPatron = datosPdf.ultimoPatron
         objresp.ultimoRegistroPatronal = datosPdf.ultimoRegistroPatronal
         objresp.archivo64 = archivo64
@@ -892,6 +893,11 @@ async function analizaTextoPDF(texto) {
             datosUsuario.fechaBaja = fechas[0];
             datosUsuario.fechaAlta = fechas[1];
             datosUsuario.salarioBase = salario[0];
+            if(salario.length>1){
+                datosUsuario.salarioAnterior = salario[1];
+            }else{
+                datosUsuario.salarioAnterior = "NO APLICA";
+            }
             datosUsuario.ultimoPatron = nombrePatron[0];
             datosUsuario.ultimoRegistroPatronal = registroPatron[0]
         }
